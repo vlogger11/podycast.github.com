@@ -1,0 +1,77 @@
+
+/* Java program to implement 
+   LRU Page Replacement Algorithm
+*/
+import java.util.ArrayList;
+import java.util.List;
+
+public class LRUPageReplacement {
+
+    public static void main(String[] args) {
+        
+        // page faults
+        int faults = 0;
+        
+        // page hits 
+        int hits = 0;
+        
+        // defining the table size
+        int tableSize = 4;
+        
+        // reference string 
+        int[] referenceString = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2};
+        
+        /* the list that stores the current pages in memory
+           and where page replacement is executed.
+        */
+        List<Integer> pages = new ArrayList<>();
+
+
+        // iterating through the ref string
+        for (int page : referenceString) {
+            
+            /* check if the page already exists in the list, 
+               if yes, we remove the page and add it
+               to the end of the list.
+            */
+            if (pages.contains(page)) {
+                
+                // removing
+                pages.remove(Integer.valueOf(page));
+                
+                // appending
+                pages.add(page);
+            }
+            // if page is not there
+            else {
+                /* we first check the length of the page list. 
+                   if still space left in the list, we first fill it
+                */
+                if (pages.size() < tableSize) {
+                    pages.add(page);
+                    
+                } else {
+                    /* if the page list is filled. We remove the 
+                       first page. 
+                    */
+                    pages.remove(0);
+                    // and then we append the page to the end of the list. 
+                    pages.add(page);
+                }
+                // Increment 1 in Page faults
+                faults += 1;
+            }
+        }
+        // calculate page hits 
+        hits = referenceString.length - faults; 
+        
+        System.out.println("Total page faults = " + faults);
+        System.out.println("Total page Hits = " + hits);
+        
+    }
+}
+
+Output 
+
+Total page faults = 7
+Total page Hits = 8

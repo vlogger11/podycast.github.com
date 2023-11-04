@@ -1,0 +1,83 @@
+mysql> create database mydoc;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use mydoc;
+Database changed
+
+mysql> create table lib_audit(bookid int,bookname varchar(20),price int)$
+Query OK, 0 rows affected (0.58 sec)
+mysql> create table lib_audit2(bookid int,bookname varchar(20),price int)$
+Query OK, 0 rows affected (0.36 sec)
+mysql> Create trigger before_delete_lib_audit before delete on lib_audit for each row
+begin
+insert into lib_audit2 values(old.bookid,old.bookname,old.price);
+end$
+Query OK, 0 rows affected (0.13 sec)
+mysql> insert into lib_audit values(1,'ab',100)$
+Query OK, 1 row affected (0.05 sec)
+mysql> insert into lib_audit values(2,'cd',10)$
+Query OK, 1 row affected (0.05 sec)
+mysql> insert into lib_audit values(3,'dg',101)$
+Query OK, 1 row affected (0.05 sec)
+mysql> select * from lib_audit$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 1 | ab | 100 |
+| 2 | cd | 10 |
+| 3 | dg | 101 |
++--------+----------+-------+
+3 rows in set (0.00 sec)
+mysql> select * from lib_audit2$
+Empty set (0.00 sec)
+mysql> delete from lib_audit where bookid=1$
+Query OK, 1 row affected (0.14 sec)
+mysql> select * from lib_audit$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 2 | cd | 10 |
+| 3 | dg | 101 |
++--------+----------+-------+
+2 rows in set (0.00 sec)
+mysql> select * from lib_audit2$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 1 | ab | 100 |
++--------+----------+-------+
+1 row in set (0.00 sec)
+mysql> delete from lib_audit where bookid=3$
+Query OK, 1 row affected (0.04 sec)
+mysql> select * from lib_audit2$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 1 | ab | 100 |
+| 3 | dg | 101 |
++--------+----------+-------+
+2 rows in set (0.00 sec)
+
+mysql> Create trigger before_update_lib_audit before update on lib_audit for each row
+begin
+insert into lib_audit2 values(old.bookid,old.bookname,old.price);
+end$
+mysql> update lib_audit set bookname='xy' where bookid=2$
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+mysql> select * from lib_audit$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 2 | xy | 10 |
++--------+----------+-------+
+1 row in set (0.00 sec)
+mysql> select * from lib_audit2$
++--------+----------+-------+
+| bookid | bookname | price |
++--------+----------+-------+
+| 1 | ab | 100 |
+| 3 | dg | 101 |
+| 2 | cd | 10 |
++--------+----------+-------+
+3 rows in set (0.00 sec)

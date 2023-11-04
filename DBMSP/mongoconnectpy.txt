@@ -1,0 +1,27 @@
+import pymongo
+
+# Replace these values with your MongoDB connection details
+# For a local MongoDB server, you can use a URL like "mongodb://localhost:27017/"
+# For a remote server, replace the URL with your server's information
+mongo_url = "mongodb://localhost:27017/"
+database_name = "your_database_name"
+
+# Connect to MongoDB
+client = pymongo.MongoClient(mongo_url)
+
+# Access the database (create it if it doesn't exist)
+db = client[database_name]
+
+# You are now connected to the MongoDB database, and you can perform operations on it.
+
+# To access a specific collection within the database, you can do:
+collection_name = "your_collection_name"
+collection = db[collection_name]
+
+# Now you can perform CRUD operations on the collection.
+# For example, to insert a document into the collection:
+data = {"key": "value"}
+collection.insert_one(data)
+
+# Remember to close the connection when you're done with it.
+client.close()

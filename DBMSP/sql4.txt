@@ -1,0 +1,76 @@
+C:\Users\hp>mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor. Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.31 MySQL Community Server - GPL
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+mysql> create database library;
+Query OK, 1 row affected (0.05 sec)
+mysql> use library;
+Database changed
+mysql> create table borrower(Roll_no int, BName varchar(20), DateofIssue date, NameofBook
+varchar(30), Status char(1));
+Query OK, 0 rows affected (0.11 sec)
+mysql> create table fine (Roll_no int,CurrDate date,Amt int);
+Query OK, 0 rows affected (0.07 sec)
+mysql> alter table borrower add primary key (Roll_no);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> insert into borrower values(1,'abc','2023-08-01','DBMS','I');
+Query OK, 1 row affected (0.02 sec)
+mysql> insert into borrower
+values(2,'xyz','2023-07-11','MYSQL','I'),(3,'lmn','2023-08-15','PL/SQL','I');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2 Duplicates: 0 Warnings: 0
+mysql> select * from borrower;
++---------+-------+-------------+------------+--------+
+| Roll_no | BName | DateofIssue | NameofBook | Status |
++---------+-------+-------------+------------+--------+
+| 1 | abc | 2023-08-01 | DBMS | I |
+| 2 | xyz | 2023-07-11 | MYSQL | I |
+| 3 | lmn | 2023-08-15 | PL/SQL | I |
++---------+-------+-------------+------------+--------+
+3 rows in set (0.01 sec)
+mysql> select * from fine;
+Empty set (0.00 sec)
+mysql> delimiter $
+mysql> create procedure calfine(Rollno int(10), Bname1 varchar(30))
+-> begin
+-> declare Idate date;
+-> declare fine int(20);
+-> declare day int(20);
+-> select DateofIssue into Idate from borrower where Roll_no=Rollno and Bname=Bname1;
+-> set day=DATEDIFF(CURDATE(),Idate);
+-> IF(day>=15 and day<=30) then
+-> set fine=day*5;
+-> ELSEIF(day>30)then
+-> set fine=day*50;
+-> end IF;
+-> update borrower set status='R' where Roll_no=Rollno and Bname=Bname1;
+-> IF (fine is not null) then
+-> insert into fine values (Rollno, CURDATE(),fine);
+-> end IF;
+-> end $
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
+mysql> call calfine(3,'lmn')$
+Query OK, 1 row affected (0.02 sec)
+mysql> select * from fine$
++---------+------------+------+
+| Roll_no | CurrDate | Amt |
++---------+------------+------+
+| 3 | 2023-09-13 | 145 |
++---------+------------+------+
+1 row in set (0.00 sec)
+mysql> select * from borrower$
++---------+-------+-------------+------------+--------+
+| Roll_no | BName | DateofIssue | NameofBook | Status |
++---------+-------+-------------+------------+--------+
+| 1 | abc | 2023-08-01 | DBMS | I |
+| 2 | xyz | 2023-07-11 | MYSQL | I |
+| 3 | lmn | 2023-08-15 | PL/SQL | R |
++---------+-------+-------------+------------+--------+
+3 rows in set (0.00 sec)

@@ -1,0 +1,30 @@
+A Subquery or Inner query or a Nested query is a query within another SQL query and
+embedded within clauses, most commonly in the WHERE clause.
+Subqueries can be used with the SELECT, INSERT, UPDATE, and DELETE statements
+along with the operators like =, <, >, >=, <=, IN, BETWEEN, etc.
+Subqueries with the SELECT Statement
+Example
+Consider the CUSTOMERS table having the following records −
+SQL> SELECT * FROM CUSTOMERS WHERE ID IN (SELECT ID FROM
+CUSTOMERS WHERE SALARY > 4500) ;
+Result:
+Subqueries with the INSERT Statement
+INSERT INTO table_name [ (column1 [, column2 ]) ]
+SELECT [ *|column1 [, column2 ]
+FROM table1 [, table2 ]
+[ WHERE VALUE OPERATOR ]
+Example:
+SQL> INSERT INTO CUSTOMERS_BKP
+SELECT * FROM CUSTOMERS
+WHERE ID IN (SELECT ID
+FROM CUSTOMERS) ;
+Subqueries with the UPDATE Statement
+UPDATE table
+SET column_name = new_value
+[ WHERE OPERATOR [ VALUE ]
+(SELECT COLUMN_NAME
+FROM TABLE_NAME)
+[ WHERE) ]
+Example:
+SQL> UPDATE CUSTOMERS SET SALARY = SALARY * 0.25 WHERE AGE IN (SELECT AGE
+FROM CUSTOMERS_BKP WHERE AGE >= 27 );

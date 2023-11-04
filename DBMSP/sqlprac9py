@@ -1,0 +1,35 @@
+import mysql.connector
+
+try:
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Aniket@112003",
+        database="apyphp"
+    )
+
+    cursor = conn.cursor()
+
+    create_table_query = """
+    CREATE TABLE userlogin (
+        ID INT NOT NULL,
+        FIRST VARCHAR(255),
+        LAST VARCHAR(255),
+        AGE INT,
+        PRIMARY KEY (ID)
+    )
+    """
+    cursor.execute(create_table_query)
+
+    conn.commit()
+
+    if conn.is_connected():
+        print("Database is connected!")
+
+except mysql.connector.Error as e:
+    print("Not Connected!")
+
+finally:
+    if conn.is_connected():
+        cursor.close()
+        conn.close()

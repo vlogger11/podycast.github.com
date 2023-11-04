@@ -1,17 +1,20 @@
 import mysql.connector
 
+# Define the conn variable outside the try block
+conn = None
+
 try:
     conn = mysql.connector.connect(
-        host="localhost",
+        host="127.0.0.1",
         user="root",
         password="Aniket@112003",
-        database="apyphp"
+        database="student"
     )
 
     cursor = conn.cursor()
 
     create_table_query = """
-    CREATE TABLE userlogin (
+    CREATE TABLE user (
         ID INT NOT NULL,
         FIRST VARCHAR(255),
         LAST VARCHAR(255),
@@ -26,10 +29,28 @@ try:
     if conn.is_connected():
         print("Database is connected!")
 
+    # Insert data into the userlogin table
+    insert_query = """
+    INSERT INTO user (ID, FIRST, LAST, AGE)
+    VALUES (1, 'John', 'Doe', 30)
+    """
+    cursor.execute(insert_query)
+    conn.commit()
+
+    # Delete a user with a specific ID
+    delete_query = "DELETE FROM user WHERE ID = 1"
+    cursor.execute(delete_query)
+    conn.commit()
+
+    # Update the age of a user with a specific ID
+    update_query = "UPDATE user SET AGE = 35 WHERE ID = 1"
+    cursor.execute(update_query)
+    conn.commit()
+
 except mysql.connector.Error as e:
-    print("Not Connected!")
+    print(f"Error: {e}")
 
 finally:
-    if conn.is_connected():
+    if conn is not None and conn.is_connected():
         cursor.close()
         conn.close()
